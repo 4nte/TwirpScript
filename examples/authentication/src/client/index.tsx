@@ -7,12 +7,12 @@ import { client } from "twirpscript";
 
 client.baseURL = "http://localhost:8080";
 
-client.use((config, next) => {
+client.use((context, next) => {
   const auth = localStorage.getItem("auth");
   if (auth) {
-    config.headers["authorization"] = `bearer ${auth}`;
+    context.headers["authorization"] = `bearer ${auth}`;
   }
-  return next(config);
+  return next(context);
 });
 
 function formatHat(hat: Hat): string {
@@ -40,7 +40,7 @@ const App: FC = () => {
         setUsername(undefined);
         setPassword(undefined);
       } catch (e) {
-        setError(e);
+        setError(e as TwirpError);
       }
     }
   }
@@ -58,14 +58,14 @@ const App: FC = () => {
         setHats((hats) => [...hats, hat]);
         setSize(undefined);
       } catch (e) {
-        setError(e);
+        setError(e as TwirpError);
       }
     }
   }
 
   return (
     <div>
-      <h1>Haberdasher Service</h1>
+      <h1>Haberdasher </h1>
       <h3>Current User: </h3>
       {user ? (
         <div>

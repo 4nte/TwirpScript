@@ -1,0 +1,13 @@
+{
+  "name": "buf",
+  "scripts": {
+    "build": "buf generate",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "twirpscript": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.2"
+  }
+}

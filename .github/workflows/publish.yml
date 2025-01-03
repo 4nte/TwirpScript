@@ -1,17 +1,13 @@
 name: Publish NPM Package
 on:
   release:
-    types: [created]
+    types: [published]
+  workflow_dispatch:
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: tatethurston/github-actions/publish@main
         with:
-          node-version: "16.x"
-          registry-url: "https://registry.npmjs.org"
-      - run: yarn
-      - run: yarn publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          package_directory: packages/twirpscript
+          npm_token: ${{ secrets.NPM_TOKEN }}

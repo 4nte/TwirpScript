@@ -1,27 +1,28 @@
 {
   "name": "ts-fullstack",
   "scripts": {
-    "start": "yarn build && open dist/index.html && node dist/server/index.js",
-    "build": "yarn twirpscript && yarn tsc && yarn webpack",
-    "test": "yarn jest"
+    "start": "npm run build && open dist/index.html && node dist/server/index.js",
+    "build": "twirpscript && tsc && webpack",
+    "test": "jest src/*",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "twirpscript": "*"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "twirpscript": "workspace:*"
   },
   "devDependencies": {
-    "@babel/core": "^7.14.0",
-    "@babel/preset-env": "^7.14.0",
-    "@babel/preset-typescript": "^7.13.0",
-    "@types/jest": "^26.0.23",
-    "@types/node": "^13.13.5",
-    "@types/react-dom": "^17.0.9",
-    "babel-jest": "^26.6.3",
-    "jest": "^27.0.6",
-    "ts-loader": "^9.0.0",
-    "typescript": "^4.3.5",
-    "webpack": "^5.37.0",
-    "webpack-cli": "^4.7.0"
+    "@babel/core": "^7.23.2",
+    "@babel/preset-env": "^7.23.2",
+    "@babel/preset-typescript": "^7.23.2",
+    "@types/jest": "^29.5.6",
+    "@types/node": "^20.8.8",
+    "@types/react-dom": "^18.2.14",
+    "babel-jest": "^29.7.0",
+    "jest": "^29.7.0",
+    "ts-loader": "^9.5.0",
+    "typescript": "^5.2.2",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4"
   }
 }

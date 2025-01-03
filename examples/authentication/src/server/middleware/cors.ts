@@ -1,26 +1,32 @@
+import { IncomingMessage } from "http";
 import type { Middleware } from "twirpscript";
+import { Context } from "../context";
 
-export const cors: Middleware = async (req, _ctx, next) => {
+export const cors: Middleware<Context, IncomingMessage> = async (
+  req,
+  _ctx,
+  next,
+) => {
   if (req.method === "OPTIONS") {
     return {
-      status: 204,
+      statusCode: 204,
       headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Request-Method": "*",
-        "Access-Control-Allow-Methods": "*",
-        "Access-Control-Allow-Headers": "*",
-        "Content-Type": "application/json",
+        "access-control-allow-origin": "*",
+        "access-control-request-method": "*",
+        "access-control-allow-methods": "*",
+        "access-control-allow-headers": "Content-Type, Authorization",
+        "content-type": "application/json",
       },
       body: "",
     };
   }
 
-  const { status, headers, body } = await next();
+  const { statusCode, headers, body } = await next();
   return {
-    status,
+    statusCode,
     body,
     headers: {
-      "Access-Control-Allow-Origin": "*",
+      "access-control-allow-origin": "*",
       ...headers,
     },
   };

@@ -1,0 +1,13 @@
+{
+  "name": "config-exclude",
+  "scripts": {
+    "build": "twirpscript && tsc",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "twirpscript": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.2"
+  }
+}

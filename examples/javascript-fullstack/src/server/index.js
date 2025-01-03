@@ -1,38 +1,39 @@
 import { createServer } from "http";
 import { createTwirpServer } from "twirpscript";
-import { HaberdasherHandler } from "./services";
+import { habderdasherHandler } from "./haberdasher/index.js";
 
 const PORT = 8080;
 
-const app = createTwirpServer([HaberdasherHandler]);
+const app = createTwirpServer([habderdasherHandler]);
 
 // CORS
 app.use(async (req, _ctx, next) => {
   if (req.method === "OPTIONS") {
     return {
-      status: 204,
+      statusCode: 204,
       headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Request-Method": "*",
-        "Access-Control-Allow-Methods": "*",
-        "Access-Control-Allow-Headers": "*",
-        "Content-Type": "application/json",
+        "access-control-allow-origin": "*",
+        "access-control-request-method": "*",
+        "access-control-allow-methods": "*",
+        "access-control-allow-headers": "*",
+        "content-type": "application/json",
       },
       body: "",
     };
   }
 
-  const { status, headers, body } = await next();
+  const { statusCode, headers, body } = await next();
   return {
-    status,
+    statusCode,
     body,
     headers: {
-      "Access-Control-Allow-Origin": "*",
+      "access-control-allow-origin": "*",
       ...headers,
     },
   };
 });
 
 createServer(app).listen(PORT, () =>
-  console.log(`Server listening on port ${PORT}`)
+  // eslint-disable-next-line no-undef
+  console.log(`Server listening on port ${PORT}`),
 );

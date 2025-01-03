@@ -1,73 +1,54 @@
 {
-  "name": "twirpscript",
-  "version": "0.0.26",
-  "description": "A protobuf RPC framework for JavaScript and TypeScript",
+  "name": "twirpscript-development",
+  "description": "Protobuf RPC framework for JavaScript and TypeScript",
   "license": "MIT",
   "author": "Tate Thurston <tatethurston@gmail.com>",
   "repository": {
     "type": "git",
     "url": "https://github.com/tatethurston/twirpscript"
   },
-  "main": "dist",
-  "module": "dist/module",
-  "bin": {
-    "twirpscript": "dist/cli/index.js"
-  },
-  "files": [
-    "dist/**/*"
-  ],
+  "type": "module",
   "scripts": {
-    "build": "yarn clean && yarn build:module && yarn build:commonjs && chmod +x dist/compiler.js dist/cli/index.js && cp src/compiler.cmd dist/compiler.cmd",
-    "build:commonjs": "yarn tsc",
-    "build:module": "yarn tsc --module esnext --outDir dist/module",
-    "build:watch": "yarn build:commonjs --watch",
-    "clean": "rm -rf dist",
-    "lint": "yarn typecheck && prettier --check . && prettier-package-json --list-different '{,example/,}package.json'",
-    "lint:fix": "prettier --write . && prettier-package-json --write '{,example/}package.json'",
-    "lint:package:fix": "prettier-package-json --write ./package.json",
-    "prepack": "yarn build",
-    "typecheck": "yarn tsc --noEmit",
-    "version": "git add -A package.json",
-    "postversion": "git push && git push --tags"
+    "//": "pnpm install again to link bin that is now available after package:build",
+    "build": "(pnpm package:copy:files && cd packages/twirpscript && pnpm package:build)",
+    "e2e:regen": "pnpm --filter './e2e/*' exec twirpscript",
+    "examples:buf:regen": "(cd examples/buf && buf generate)",
+    "examples:regen": "pnpm examples:buf:regen && for f in examples/*; do if [ $f != examples/buf ]; then (cd $f; pnpm twirpscript); fi; done",
+    "lint": "pnpm typecheck && prettier --check . && prettier-package-json --list-different '{,e2e/*,examples/*,packages/*,}package.json' && eslint .",
+    "lint:fix": "prettier --write . && prettier-package-json --write '{,e2e/*,examples/*,packages/*}package.json' && eslint --fix .",
+    "package:copy:files": "cp ./LICENSE ./README.md packages/twirpscript",
+    "prepare": "husky install",
+    "regen": "pnpm examples:regen && pnpm e2e:regen",
+    "test": "jest",
+    "test:ci": "pnpm install --frozen-lockfile && jest examples/* packages/* --coverage",
+    "test:integration": "pnpm run test-protos && pnpm run test-clientcompat",
+    "test-clientcompat": "(cd ./src/integration-tests/clientcompat && pnpm run build && npx twirpscript)",
+    "test-protos": "(cd src/integration-tests/protos && pnpm run build && pnpm run typecheck:protos)",
+    "typecheck": "pnpm --recursive run typecheck"
   },
   "sideEffects": false,
-  "types": "dist",
-  "dependencies": {
-    "@types/google-protobuf": "^3.15.3",
-    "google-protobuf": "^3.17.3",
-    "prettier": "^2.1.1"
-  },
   "devDependencies": {
-    "@babel/preset-env": "^7.14.1",
-    "@babel/preset-typescript": "^7.13.0",
-    "@types/jest": "^27.0.2",
-    "@types/node": "^16.4.8",
-    "@types/prettier": "^2.3.2",
-    "@types/react": "^17.0.3",
-    "@typescript-eslint/eslint-plugin": "^4.1.0",
-    "@typescript-eslint/parser": "^4.1.0",
-    "babel-loader": "^8.2.2",
-    "eslint": "^7.8.1",
-    "eslint-config-prettier": "^8.1.0",
-    "husky": "^4.2.5",
-    "jest": "^27.2.4",
-    "prettier-package-json": "^2.1.3",
-    "typescript": "^4.3.5",
-    "webpack": "^5.37.0",
-    "webpack-cli": "^4.7.0"
+    "@babel/preset-env": "^7.23.2",
+    "@babel/preset-typescript": "^7.23.2",
+    "@types/google-protobuf": "^3.15.9",
+    "@types/jest": "^29.5.6",
+    "@types/node": "^20.8.8",
+    "@types/prettier": "^3.0.0",
+    "@types/react": "^18.2.31",
+    "@typescript-eslint/eslint-plugin": "^6.9.0",
+    "@typescript-eslint/parser": "^6.9.0",
+    "babel-loader": "^9.1.3",
+    "codecov": "^3.8.3",
+    "esbuild": "^0.19.5",
+    "eslint": "^8.52.0",
+    "eslint-config-prettier": "^9.0.0",
+    "google-protobuf": "^3.21.2",
+    "husky": "^8.0.3",
+    "jest": "^29.7.0",
+    "prettier": "^3.0.3",
+    "prettier-package-json": "^2.8.0",
+    "protoscript": "0.0.20",
+    "typescript": "^5.2.2"
   },
-  "keywords": [
-    "browser",
-    "protobuf",
-    "protocol buffers",
-    "rpc",
-    "twirp",
-    "typescript",
-    "web"
-  ],
-  "husky": {
-    "hooks": {
-      "pre-commit": "yarn lint:fix --staged"
-    }
-  }
+  "packageManager": "pnpm@8.6.9"
 }

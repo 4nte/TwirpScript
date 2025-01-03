@@ -1,6 +1,7 @@
+import { IncomingMessage } from "http";
 import { Middleware, TwirpErrorResponse } from "twirpscript";
 import { Context } from "../context";
-import { getCurrentUser } from "../services";
+import { getCurrentUser, unauthenticatedUser } from "../services";
 
 interface RequireAuthenticationOpts {
   exceptions: string[];
@@ -8,22 +9,24 @@ interface RequireAuthenticationOpts {
 
 export function requireAuthentication({
   exceptions,
-}: RequireAuthenticationOpts): Middleware<Context> {
+}: RequireAuthenticationOpts): Middleware<Context, IncomingMessage> {
   return async (req, ctx, next) => {
-    for (let exception of exceptions) {
-      if (req.url?.startsWith("/twirp/" + exception)) {
+    for (const exception of exceptions) {
+      if (ctx.service?.name === exception) {
+        ctx.currentUser = unauthenticatedUser;
         return next();
       }
     }
 
     const token = req.headers["authorization"]?.split("bearer")?.[1]?.trim();
-    ctx.currentUser = getCurrentUser(token);
-    if (!ctx.currentUser) {
+    const currentUser = getCurrentUser(token);
+    if (!currentUser) {
       return TwirpErrorResponse({
         code: "unauthenticated",
         msg: "Access denied",
       });
     } else {
+      ctx.currentUser = currentUser;
       return next();
     }
   };
